@@ -1,12 +1,14 @@
 package com.customer.Controller;
 
-import com.customer.Entity.Customer;
+import com.customer.Model.Customer;
 import com.customer.Feign.Feign;
 
 import com.customer.Model.Account;
 import com.customer.Model.RequestForPut;
 import com.customer.Model.RequiredResponse;
 import com.customer.Service.CustomerServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
+
+    private static Logger logger = LoggerFactory.getLogger(CustomerController.class);
     @Autowired
     private CustomerServices customerServices;
 
@@ -29,6 +33,7 @@ public class CustomerController {
 
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomer(){
+        logger.info("customers list by get method");
        List<Customer> list=customerServices.getCustomer();
 
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -49,6 +54,7 @@ public class CustomerController {
        return  new ResponseEntity<>(one,HttpStatus.OK);
     }
 
+
     @GetMapping("/id/ids/{customer_id}")
     public ResponseEntity<RequiredResponse> getAllDataBasedOnCentreId(@Valid  @PathVariable("customer_id") Integer account_id){
 
@@ -57,9 +63,17 @@ public class CustomerController {
 
         Customer cus= customerServices.findById(account_id);
         requiredResponse.setCustomer_model(cus);
-      List<Account>  account= (List<Account>) feign.getIds(account_id);
+
+        try{
+      List<Account>  account= feign.getIds(account_id);
         requiredResponse.setAccount_model(account);
         return new ResponseEntity<>(requiredResponse,HttpStatus.OK);
+        }
+        catch (Exception e){
+           // throw new  HystrixException("Account service down");
+            requiredResponse.setAccount_model(null);
+            return new ResponseEntity<>(requiredResponse,HttpStatus.OK);
+        }
     }
 
 
@@ -68,34 +82,33 @@ public class CustomerController {
     @PatchMapping("/updateActive/{id}")
     public ResponseEntity<Customer> delete(@PathVariable("id") Integer id){
 
-        return new ResponseEntity<Customer>(customerServices.deleteCustomer(id),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.deleteCustomer(id),HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/updateLastName")
     public ResponseEntity<Customer> updateLastName(@RequestBody RequestForPut p){
-        return new ResponseEntity<Customer>(customerServices.updateLastName(p),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.updateLastName(p),HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/updateMiddleName")
     public ResponseEntity<Customer> updateMiddleName(@RequestBody RequestForPut p){
-        return new ResponseEntity<Customer>(customerServices.updateMiddleName(p),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.updateMiddleName(p),HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/updateAddress")
     public ResponseEntity<Customer> updateAddress(@RequestBody RequestForPut p){
-        return new ResponseEntity<Customer>(customerServices.updateAddress(p),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.updateAddress(p),HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/updatePhone")
     public ResponseEntity<Customer> updatePhone(@RequestBody RequestForPut p){
-        return new ResponseEntity<Customer>(customerServices.updatePhone(p),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.updatePhone(p), HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/updateEmail")
     public ResponseEntity<Customer> updateEmail(@RequestBody RequestForPut p){
-        return new ResponseEntity<Customer>(customerServices.updateEmail(p),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(customerServices.updateEmail(p),HttpStatus.ACCEPTED);
     }
-
 
 
 }

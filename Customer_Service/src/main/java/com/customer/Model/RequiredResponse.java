@@ -1,6 +1,5 @@
 package com.customer.Model;
 
-import com.customer.Entity.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

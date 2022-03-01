@@ -1,4 +1,4 @@
-package com.customer.Entity;
+package com.customer.Model;
 
 import com.customer.Enum.CustomerType;
 import com.customer.Model.Account;
@@ -31,7 +31,7 @@ private String customerMiddleName;
 
 private String customerLastName;
 
-@NotEmpty(message = "Address should not be empty")
+@NotNull(message = "Address should not be empty")
     private String address;
 
 @NotNull(message = "Date cannot be null")

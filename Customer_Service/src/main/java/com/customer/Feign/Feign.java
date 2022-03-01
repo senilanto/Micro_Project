@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name="ACCOUNT-SERVICE")
+@FeignClient(name="ACCOUNT-SERVICE",fallbackFactory = HystrixFallBackFactory.class)
 public interface Feign {
     @GetMapping(value = "/account/cus/id/{customerid}")
     List<Account> getIds(@PathVariable Integer customerid);

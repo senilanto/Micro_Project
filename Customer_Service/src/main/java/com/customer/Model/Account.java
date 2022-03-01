@@ -37,7 +37,6 @@ public class Account {
     private Boolean isActive;
 
     @NotNull(message = "Account Type cannot be null")
-
     private AccountType accountType;
 
 
